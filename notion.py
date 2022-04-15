@@ -29,3 +29,41 @@ class NotionClient:
 
         with open('./db.json', 'w', encoding='utf8') as f:
             json.dump(data, f, ensure_ascii=False)
+
+    # read, update
+    def create_page(self, description, date, status):
+        create_url = 'https://api.notion.com/v1/pages'
+
+        data = {
+        "parent": { "database_id": self.database_id },
+        "properties": {
+            "Description": {
+                "title": [
+                    {
+                        "text": {
+                            "content": description
+                        }
+                    }
+                ]
+            },
+            "Date": {
+                "date": {
+                            "start": date,
+                            "end": None
+                        }
+            },
+            "Status": {
+                "rich_text": [
+                    {
+                        "text": {
+                            "content": status
+                        }
+                    }
+                ]
+            }
+        }}
+
+        data = json.dumps(data)
+        res = requests.post(create_url, headers=self.headers, data=data)
+        print(res.status_code)
+        return res
